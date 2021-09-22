@@ -2,10 +2,13 @@ import gym
 from gym import spaces
 from gym.envs.registration import EnvSpec
 import numpy as np
-from multiagent.multi_discrete import MultiDiscrete
+# from multiagent.multi_discrete import MultiDiscrete
+from gym.spaces import MultiDiscrete
+
 
 # environment for all agents in the multiagent world
 # currently code assumes that no agents will be created/destroyed at runtime!
+
 class MultiAgentEnv(gym.Env):
     metadata = {
         'render.modes' : ['human', 'rgb_array']
@@ -58,7 +61,10 @@ class MultiAgentEnv(gym.Env):
             if len(total_action_space) > 1:
                 # all action spaces are discrete, so simplify to MultiDiscrete action space
                 if all([isinstance(act_space, spaces.Discrete) for act_space in total_action_space]):
-                    act_space = MultiDiscrete([[0, act_space.n - 1] for act_space in total_action_space])
+                    # Original:
+                    # act_space = MultiDiscrete([[0, act_space.n - 1] for act_space in total_action_space])
+                    # Updated for newer gym, i.e. newer gym.spaces.MultiDiscrete
+                    act_space = MultiDiscrete([act_space.n for act_space in total_action_space])
                 else:
                     act_space = spaces.Tuple(total_action_space)
                 self.action_space.append(act_space)
@@ -146,13 +152,14 @@ class MultiAgentEnv(gym.Env):
         agent.action.c = np.zeros(self.world.dim_c)
         # process action
         if isinstance(action_space, MultiDiscrete):
-            act = []
-            size = action_space.high - action_space.low + 1
-            index = 0
-            for s in size:
-                act.append(action[index:(index+s)])
-                index += s
-            action = act
+            pass  # seems like this is not necessary anymore
+            # act = []
+            # size = action_space.nvec
+            # index = 0
+            # for s in size:
+            #     act.append(action[index:(index+s)])
+            #     index += s
+            # action = act
         else:
             action = [action]
 
