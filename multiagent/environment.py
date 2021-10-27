@@ -206,7 +206,7 @@ class MultiAgentEnv(gym.Env):
     # render environment
     def render(self, mode='human'):
         if mode == 'human':
-            alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
             message = ''
             for agent in self.world.agents:
                 comm = []
